@@ -1,7 +1,6 @@
 package me.littlecabbage.androidspacescenes;
 
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -9,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.widget.ImageView;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -17,22 +15,19 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class SimpleWidgetProvider extends AppWidgetProvider {
-    ImageView imageView;
     @Override
     public void onUpdate(final Context context, final AppWidgetManager appWidgetManager, final int[] appWidgetIds) {
+        Toast.makeText(context, "Widget Updating", Toast.LENGTH_LONG).show();
         for (final int widgetId : appWidgetIds) {
-//            String number = String.format("%03d", (new Random().nextInt(900) + 100));
-//      imageView = (ImageView) findViewById(R.id.imageView);
             final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.simple_widget);
             // FIXME: 4/23/2016
             String key = "CD4cC9NEeIUmK8bufx1hvsShTY25RmzVlw2JXA2L";
@@ -49,7 +44,7 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                                 new LoadImage(remoteViews, context, appWidgetIds, appWidgetManager, widgetId).execute(photoUrl);
 
                             } catch (JSONException e) {
-                                Toast.makeText(context, ":(", Toast.LENGTH_LONG);
+                                Toast.makeText(context, ":(", Toast.LENGTH_LONG).show();
                             }
                         }
                     }, new Response.ErrorListener() {
@@ -57,9 +52,10 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             // TODO Auto-generated method stub
-
+                            Toast.makeText(context, "Failed to get a valid JSON response", Toast.LENGTH_LONG).show();
                         }
                     });
+            Volley.newRequestQueue(context).add(jsObjRequest);
         }
     }
 
@@ -86,6 +82,7 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                 bitmap = BitmapFactory.decodeStream((InputStream)new URL(args[0]).getContent());
 
             } catch (Exception e) {
+                Toast.makeText(context, "failed to decode URL", Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
             return bitmap;
