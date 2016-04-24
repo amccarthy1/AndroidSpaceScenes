@@ -59,36 +59,19 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                                         if (image != null) {
                                             remoteViews.setImageViewBitmap(R.id.imageView, image);
                                         }
-                                        Intent intent = new Intent(context, SimpleWidgetProvider.class);
-                                        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                                                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                        remoteViews.setOnClickPendingIntent(R.id.imageView, pendingIntent);
+
                                         appWidgetManager.updateAppWidget(widgetId, remoteViews);
                                     }
                                 }, new Runnable() {
                                     @Override
                                     public void run() {
                                         error(remoteViews);
-                                        Intent intent = new Intent(context, SimpleWidgetProvider.class);
-                                        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                                                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                        remoteViews.setOnClickPendingIntent(R.id.imageView, pendingIntent);
                                         appWidgetManager.updateAppWidget(widgetId, remoteViews);
                                     }
                                 }).execute(photoUrl);
 
                             } catch (JSONException e) {
                                 error(remoteViews);
-                                Intent intent = new Intent(context, SimpleWidgetProvider.class);
-                                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-                                PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                                remoteViews.setOnClickPendingIntent(R.id.imageView, pendingIntent);
                                 appWidgetManager.updateAppWidget(widgetId, remoteViews);
                             }
                         }
@@ -97,16 +80,13 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             error(remoteViews);
-                            Intent intent = new Intent(context, SimpleWidgetProvider.class);
-                            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
-                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
-                                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                            remoteViews.setOnClickPendingIntent(R.id.imageView, pendingIntent);
                             appWidgetManager.updateAppWidget(widgetId, remoteViews);
                         }
                     });
             Volley.newRequestQueue(context).add(jsObjRequest);
+            Intent intent = new Intent(context, MainActivity.class);
+            PendingIntent startPendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
+            remoteViews.setOnClickPendingIntent(R.id.imageView, startPendingIntent);
         }
     }
 
