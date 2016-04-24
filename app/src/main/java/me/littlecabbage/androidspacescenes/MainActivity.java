@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.VolleyError;
 
@@ -26,15 +27,35 @@ public class MainActivity extends AppCompatActivity {
         ApodApi api = ApodApi.getInstance(context.getString(R.string.api_key));
         api.getPhoto(context, new VoidCallBack<JSONObject>() {
             @Override
-            public void call(JSONObject jsonObject) {
+            public void call(final JSONObject jsonObject) {
                 try {
-                    String url = jsonObject.getString("url");
+                    final String url = jsonObject.getString("url");
+                    final String dateStr = jsonObject.getString("date");
+                    final String titleStr = jsonObject.getString("title");
+                    final String descriptionStr = jsonObject.getString("explanation");
+                    final String copyrightStr = (jsonObject.has("copyright") ? jsonObject.getString("copyright") : "NASA");
                     new LoadImage(new VoidCallBack<Bitmap>() {
                         @Override
                         public void call(Bitmap arg) {
                             ImageView img = (ImageView) findViewById(R.id.app_apod);
                             assert img != null;
                             img.setImageBitmap(arg);
+
+                            TextView date = (TextView) findViewById(R.id.photo_date);
+                            assert date != null;
+                            date.setText(dateStr);
+
+                            TextView title = (TextView) findViewById(R.id.photo_title);
+                            assert title != null;
+                            title.setText(titleStr);
+
+                            TextView description = (TextView) findViewById(R.id.photo_description);
+                            assert description != null;
+                            description.setText(descriptionStr);
+
+                            TextView copyright = (TextView) findViewById(R.id.photo_copyright);
+                            assert copyright != null;
+                            copyright.setText(copyrightStr);
                         }
                     }, new Runnable() {
                         @Override
