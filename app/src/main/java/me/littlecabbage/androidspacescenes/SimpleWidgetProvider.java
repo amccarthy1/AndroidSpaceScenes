@@ -26,12 +26,15 @@ import java.net.URL;
 public class SimpleWidgetProvider extends AppWidgetProvider {
     //To be used as a callback function to reset the widget with the loaded image
     private interface CallBack<T> {
-        public void run(T arg);
+        void run(T arg);
+    }
+
+    private static void error(RemoteViews remoteViews) {
+        remoteViews.setImageViewResource(R.id.imageView, R.drawable.error);
     }
 
     @Override
     public void onUpdate(final Context context, final AppWidgetManager appWidgetManager, final int[] appWidgetIds) {
-        Toast.makeText(context, "Widget Updating", Toast.LENGTH_LONG).show();
         for (final int widgetId : appWidgetIds) {
             final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.simple_widget);
             // FIXME: 4/23/2016, remove key, final variables
@@ -64,17 +67,43 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
                                         remoteViews.setOnClickPendingIntent(R.id.imageView, pendingIntent);
                                         appWidgetManager.updateAppWidget(widgetId, remoteViews);
                                     }
+                                }, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        error(remoteViews);
+                                        Intent intent = new Intent(context, SimpleWidgetProvider.class);
+                                        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                                        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+                                        PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                                                0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                        remoteViews.setOnClickPendingIntent(R.id.imageView, pendingIntent);
+                                        appWidgetManager.updateAppWidget(widgetId, remoteViews);
+                                    }
                                 }).execute(photoUrl);
 
                             } catch (JSONException e) {
-                                Toast.makeText(context, ":(", Toast.LENGTH_LONG).show();
+                                error(remoteViews);
+                                Intent intent = new Intent(context, SimpleWidgetProvider.class);
+                                intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                                intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+                                PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                                        0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                remoteViews.setOnClickPendingIntent(R.id.imageView, pendingIntent);
+                                appWidgetManager.updateAppWidget(widgetId, remoteViews);
                             }
                         }
                     }, new Response.ErrorListener() {
 
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(context, "Failed to get a valid JSON response", Toast.LENGTH_LONG).show();
+                            error(remoteViews);
+                            Intent intent = new Intent(context, SimpleWidgetProvider.class);
+                            intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+                            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, appWidgetIds);
+                            PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
+                                    0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                            remoteViews.setOnClickPendingIntent(R.id.imageView, pendingIntent);
+                            appWidgetManager.updateAppWidget(widgetId, remoteViews);
                         }
                     });
             Volley.newRequestQueue(context).add(jsObjRequest);
@@ -87,11 +116,13 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
     private class LoadImage extends AsyncTask<String, String, Bitmap> {
         private Bitmap bitmap;
         private CallBack<Bitmap> cb;
+        private Runnable errorHandler;
 
         //Load Image takes a callback function to update the app
-        public LoadImage(CallBack<Bitmap> cb) {
+        public LoadImage(CallBack<Bitmap> cb, Runnable error) {
             super();
             this.cb = cb;
+            this.errorHandler = error;
         }
 
         protected Bitmap doInBackground(String... args) {
@@ -100,11 +131,15 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
 
             } catch (Exception e) {
                 e.printStackTrace();
+                errorHandler.run();
             }
             return bitmap;
         }
 
         protected void onPostExecute(Bitmap image) {
+            if (image == null) {
+                errorHandler.run();
+            }
             cb.run(image);
         }
     }
