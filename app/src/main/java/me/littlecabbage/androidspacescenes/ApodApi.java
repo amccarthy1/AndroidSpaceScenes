@@ -83,7 +83,7 @@ public class ApodApi {
         return instances.get(key);
     }
 
-    public void getPhoto(Context context, VoidCallBack<JSONObject> callback, VoidCallBack<VolleyError> errorHandler) {
+    public void getPhoto(VoidCallBack<JSONObject> callback, VoidCallBack<VolleyError> errorHandler) {
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(
             Request.Method.GET,
             getUrl(),
@@ -91,10 +91,11 @@ public class ApodApi {
             new CallbackListener(callback),
             new CallbackErrorListener(errorHandler)
         );
-        Volley.newRequestQueue(context).add(jsObjRequest);
+        jsObjRequest.setShouldCache(false);
+        App.getInstance().addToRequestQueue(jsObjRequest);
     }
 
-    public void getPhoto(Context context, Date date, VoidCallBack<JSONObject> callback, VoidCallBack<VolleyError> errorHandler) {
+    public void getPhoto(Date date, VoidCallBack<JSONObject> callback, VoidCallBack<VolleyError> errorHandler) {
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(
                 Request.Method.GET,
                 getUrl(date),
@@ -102,6 +103,7 @@ public class ApodApi {
                 new CallbackListener(callback),
                 new CallbackErrorListener(errorHandler)
         );
-        Volley.newRequestQueue(context).add(jsObjRequest);
+        jsObjRequest.setShouldCache(false);
+        App.getInstance().addToRequestQueue(jsObjRequest);
     }
 }

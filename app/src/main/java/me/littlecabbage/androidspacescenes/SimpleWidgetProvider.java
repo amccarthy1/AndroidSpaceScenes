@@ -23,7 +23,7 @@ public class SimpleWidgetProvider extends AppWidgetProvider {
         for (final int widgetId : appWidgetIds) {
             final RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.simple_widget);
             ApodApi api = ApodApi.getInstance(context.getString(R.string.api_key)); // This somewhat masks the API key maybe
-            api.getPhoto(context, new VoidCallBack<JSONObject>() {
+            api.getPhoto(new VoidCallBack<JSONObject>() {
                 @Override
                 public void call(JSONObject response) {
                     try {

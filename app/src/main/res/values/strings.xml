@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Android Space Scenes</string>
+    <string name="app_name">Space Scenes</string>
     <string name="action_settings">Settings</string>
     <string name="photo_description">Astronomy Photo of the Daty</string>
     <string name="date">Date: </string>

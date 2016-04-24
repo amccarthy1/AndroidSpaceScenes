@@ -25,7 +25,6 @@ class LoadImage extends AsyncTask<String, String, Bitmap> {
     protected Bitmap doInBackground(String... args) {
         try {
             bitmap = BitmapFactory.decodeStream((InputStream) new URL(args[0]).getContent());
-
         } catch (Exception e) {
             e.printStackTrace();
             errorHandler.run();
