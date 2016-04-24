@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Android Space Scenes</string>
     <string name="action_settings">Settings</string>
+    <string name="photo_description">Astronomy Photo of the Daty</string>
+    <string name="title">Title:</string>
+    <string name="api_key">CD4cC9NEeIUmK8bufx1hvsShTY25RmzVlw2JXA2L</string>
 </resources>

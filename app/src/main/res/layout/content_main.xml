@@ -12,8 +12,25 @@
     tools:context="me.littlecabbage.androidspacescenes.MainActivity"
     tools:showIn="@layout/activity_main">
 
+    <ImageView
+        android:contentDescription="@string/photo_description"
+        android:layout_height="120dp"
+        android:layout_width="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/title"/>
+        <TextView
+            android:id="@+id/photo_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:text="" />
 </RelativeLayout>
